@@ -17,15 +17,9 @@ class ListAdapter(private val coroutineScope: CoroutineScope) : RecyclerView.Ada
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false)
-        val viewHolder = ViewHolder(view)
-
-        view.setOnClickListener {
-            if (viewHolder.imageState == ImageState.EMPTY) {
-                viewHolder.onClick(coroutineScope.async { DogServiceDelegate.getDogImageUrl() })
-            }
+        return ViewHolder(view) { position ->
+            removeItem(position)
         }
-
-        return viewHolder
     }
 
     override fun getItemCount(): Int {
@@ -39,6 +33,13 @@ class ListAdapter(private val coroutineScope: CoroutineScope) : RecyclerView.Ada
     fun addItems(url: Deferred<String?>) {
         _items.add(DeferredHolder(url))
         notifyItemInserted(_items.size - 1)
+    }
+
+    fun removeItem(position: Int) {
+        if (position >= 0 && position < _items.size) {
+            _items.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

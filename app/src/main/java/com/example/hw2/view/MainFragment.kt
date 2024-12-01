@@ -38,6 +38,8 @@ class MainFragment: Fragment(R.layout.main_fragment) {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
 
+
+
         button.setOnClickListener {
             val deferred = lifecycleScope.async {
                 DogServiceDelegate.getDogImageUrl()

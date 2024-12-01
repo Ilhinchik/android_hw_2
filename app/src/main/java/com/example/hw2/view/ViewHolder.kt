@@ -1,6 +1,7 @@
 package com.example.hw2.view
 
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -13,21 +14,33 @@ import com.example.hw2.R
 import com.example.hw2.view.ImageState
 import java.lang.Exception
 
-class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class ViewHolder(
+    view: View,
+    private val onDelete: (Int) -> Unit
+) : RecyclerView.ViewHolder(view) {
 
     val text = view.findViewById<TextView>(R.id.text_1)
     val image = view.findViewById<ImageView>(R.id.image_view)
     val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+    private val deleteButton = view.findViewById<ImageButton>(R.id.delete_button)
 
     private var deferredUrl: DeferredHolder<String?>? = null
     var imageState = ImageState.EMPTY
         private set
+
+    init {
+        deleteButton.setOnClickListener {
+            onDelete(adapterPosition)
+        }
+    }
 
     fun bind(url: DeferredHolder<String?>) {
         setStartState()
         deferredUrl = url
         deferredHandler(url.deferred)
     }
+
+
 
     fun onClick(url: Deferred<String?>) {
         deferredUrl?.let { it.deferred = url } ?: return
@@ -90,6 +103,6 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 }
 
-const val WAITING_MESSAGE = "Загружаем собачку :)"
+const val WAITING_MESSAGE = "Загружаем собачку"
 const val FAIL_MESSAGE = "Что-то пошло не так:("
 const val SUCCESS_MESSAGE = ""
